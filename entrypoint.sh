@@ -201,6 +201,8 @@ case "$log" in
         ;;
 esac
 
+echo -e "New tag: $tag"
+
 if $pre_release
 then
     # get current commit hash for tag
