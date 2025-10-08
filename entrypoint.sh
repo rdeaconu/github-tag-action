@@ -102,6 +102,8 @@ fi
 
 tagFmt="^$tagPrefix?[0-9]+\.[0-9]+\.[0-9]+$"
 preTagFmt="^$tagPrefix?[0-9]+\.[0-9]+\.[0-9]+(-$suffix\.[0-9]+)$"
+echo tagFmt $tagFmt
+echo preTagFmt $preTagFmt
 
 # get the git refs
 git_refs=
@@ -115,12 +117,18 @@ case "$tag_context" in
     * ) echo "Unrecognised context"
         exit 1;;
 esac
+echo git_refs $git_refs
 
 # get the latest tag that looks like a semver (with or without v)
 matching_tag_refs=$( (grep -E "$tagFmt" <<< "$git_refs") || true)
 matching_pre_tag_refs=$( (grep -E "$preTagFmt" <<< "$git_refs") || true)
 tag=$(head -n 1 <<< "$matching_tag_refs")
 pre_tag=$(head -n 1 <<< "$matching_pre_tag_refs")
+
+echo matching_tag_refs $matching_tag_refs
+echo matching_pre_tag_refs $matching_pre_tag_refs
+echo tag $tag
+echo pre_tag $pre_tag
 
 # if there are none, start tags at initial version
 if [ -z "$tag" ]
@@ -134,8 +142,10 @@ fi
 
 # get current commit hash for tag
 tag_commit=$(git rev-list -n 1 "$tag" || true )
+echo tag_commit $tag_commit
 # get current commit hash
 commit=$(git rev-parse HEAD)
+echo commit $commit
 # skip if there are no new commits for non-pre_release
 if [ "$tag_commit" == "$commit" ] && [ "$force_without_changes" == "false" ]
 then
@@ -195,6 +205,7 @@ case "$log" in
             setOutput "part" "$default_semvar_bump"
             exit 0
         else
+            echo "running semver" $default_semvar_bump $current_tag
             new=${tagPrefix}$(semver -i "${default_semvar_bump}" "${current_tag}")
             part=$default_semvar_bump
         fi
@@ -202,6 +213,7 @@ case "$log" in
 esac
 
 echo -e "New tag: $tag"
+echo part $part
 
 if $pre_release
 then
