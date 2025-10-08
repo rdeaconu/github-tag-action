@@ -185,9 +185,21 @@ else
   current_tag="$(echo ${tag}| sed "s;${tagPrefix};;g")"
 fi
 case "$log" in
-    *$major_string_token* ) new=${tagPrefix}$(semver -i major "${current_tag}"); part="major";;
-    *$minor_string_token* ) new=${tagPrefix}$(semver -i minor "${current_tag}"); part="minor";;
-    *$patch_string_token* ) new=${tagPrefix}$(semver -i patch "${current_tag}"); part="patch";;
+    *$major_string_token* ) 
+        new=${tagPrefix}$(semver -i major "${current_tag}")
+        part="major"
+        echo "major"
+        ;;
+    *$minor_string_token* )
+        new=${tagPrefix}$(semver -i minor "${current_tag}")
+        part="minor"
+        echo "minor"
+        ;;
+    *$patch_string_token* )
+        new=${tagPrefix}$(semver -i patch "${current_tag}")
+        part="patch"
+        echo "patch"
+        ;;
     *$none_string_token* )
         echo "Default bump was set to none. Skipping..."
         setOutput "old_tag" "$tag"
